@@ -25,7 +25,8 @@ options=(
 "Log Farmer"
 "Search in node logs"
 "Search in farmer logs"
-"Wipe Farmer and Purge-chain"
+"Wipe Farmer"
+"Purge-chain"
 "Delete Node"
 "Exit")
 select opt in "${options[@]}"
@@ -55,8 +56,8 @@ apt install jq
 
 mkdir $HOME/subspace; \
 cd $HOME/subspace && \
-wget https://github.com/subspace/subspace/releases/download/gemini-3f-2023-aug-18/subspace-farmer-ubuntu-x86_64-skylake-gemini-3f-2023-aug-18 -O farmer && \
-wget https://github.com/subspace/subspace/releases/download/gemini-3f-2023-aug-18/subspace-node-ubuntu-x86_64-skylake-gemini-3f-2023-aug-18 -O subspace && \
+wget https://github.com/subspace/subspace/releases/download/gemini-3f-2023-aug-21/subspace-farmer-ubuntu-x86_64-skylake-gemini-3f-2023-aug-21 -O farmer && \
+wget https://github.com/subspace/subspace/releases/download/gemini-3f-2023-aug-21/subspace-node-ubuntu-x86_64-skylake-gemini-3f-2023-aug-21 -O subspace && \
 sudo chmod +x * && \
 sudo mv * /usr/local/bin/ && \
 cd $HOME && \
@@ -132,11 +133,17 @@ sudo journalctl -n 100 -f -u subspacefarm
 break
 ;;
 
-"Wipe Farmer and Purge-chain")
-systemctl stop subspace subspacefarm
+"Wipe Farmer")
+systemctl stop subspacefarm
 farmer wipe $HOME/.local/share/subspace-farmer
+sudo systemctl restart subspacefarm
+break
+;;
+
+"Purge-chain")
+systemctl stop subspace
 subspace purge-chain --chain gemini-3f -y
-sudo systemctl restart subspacefarm subspace
+sudo systemctl restart subspace
 break
 ;;
 
